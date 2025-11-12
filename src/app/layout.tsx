@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ReactQueryProvider } from "@/components/providers/ReactQuery";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "EduConnect",
@@ -19,7 +19,7 @@ export default function RootLayout({
         <ReactQueryProvider>
 
           {children}
-          <Toaster  />
+          <Toaster position="top-right"  />
         </ReactQueryProvider>
       </body>
     </html>

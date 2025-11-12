@@ -11,17 +11,23 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { SidebarDataSiswa } from "@/data/SidebarDataSiswa"
+import { LucideProps } from "lucide-react";
 import Link from "next/link"
-export function SidebarSiswa(){
-    return (
+import { ForwardRefExoticComponent, RefAttributes } from "react";
+export function SidebarDashboard({data}  : {data : {
+      name: string;
+    link: string;
+    icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>;
 
-        <Sidebar>
+}[]}) {
+  return (
+
+    <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Hello </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-2">
-              {SidebarDataSiswa.map((item) => (
+              {data.map((item) => (
                 <SidebarMenuItem key={item.name} className="border-2 rounded-xl border-accent">
                   <SidebarMenuButton asChild>
                     <Link href={item.link}>
@@ -36,5 +42,5 @@ export function SidebarSiswa(){
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-)
+  )
 }

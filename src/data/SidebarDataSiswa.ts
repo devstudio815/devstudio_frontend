@@ -9,7 +9,7 @@ export const SidebarDataSiswa = [
   {
     name: "Attendance",
     link: "/siswa/attendance",
-    icon: ClipboardListIcon, // atau ikon lain yang cocok
+    icon: ClipboardListIcon, 
   },
   {
     name: "Home Work",
