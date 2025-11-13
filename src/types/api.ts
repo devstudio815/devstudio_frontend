@@ -4,27 +4,27 @@ export interface WithChildren {
   children: ReactNode;
 }
 export interface ErrorResponse {
-  statusCode: number;
+  status_code: number;
   success: boolean;
   message?: string;
 }
 
 export type API_RESPONSE<T> = {
   message: string;
-  statusCode: number;
+  status_code: number;
   success: boolean;
   data: T;
 };
 
 export type ApiPagination<T> = {
-  data: T
+  data: T;
   pagination: {
     totalPages: number;
     totalItems: number;
   };
   success: boolean;
   message: string;
-  statusCode: number;
+  status_code: number;
 };
 
 export type PaginationResponse = {
