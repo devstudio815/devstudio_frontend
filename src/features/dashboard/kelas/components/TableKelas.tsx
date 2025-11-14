@@ -9,27 +9,17 @@ import {
 import { useFindAllKelas } from "../api/kelasApi";
 import { FormatDate } from "@/utils/FormatDate";
 import { Loader2 } from "lucide-react";
-import { useFindAllSiswa } from "../../siswa/api/siswaApi";
+import { KelasDto } from "../types";
 
-export function TableKelas() {
-  const { data, isLoading, isError } = useFindAllKelas({
-    params: {
-      limit: 10,
-      page: 1,
-      search: "",
-      sortBy: "",
-      sortType: "",
-    },
-  });
-  const {} = useFindAllSiswa({
-    filters: {
-      limit: 25,
-      page: 1,
-      search: "",
-      sortBy: "",
-      sortType: "",
-    },
-  });
+interface TableKelasProps {
+data : KelasDto[]
+isLoading : boolean
+
+}
+
+export function TableKelas({ data,isLoading }: TableKelasProps) {
+
+
 
   if (isLoading) {
     return (
@@ -39,46 +29,43 @@ export function TableKelas() {
     );
   }
 
-  if (isError) {
-    return (
-      <div className="p-4 text-center text-red-500">
-        Terjadi kesalahan saat memuat data.
-      </div>
-    );
-  }
 
   return (
     <div className="overflow-x-auto rounded-lg border ">
       <Table className="w-full text-sm">
         <TableHeader>
           <TableRow className="bg-gray-100 border-b">
-            <TableHead className="px-4 py-3 text-left font-semibold">
+            <TableHead className="px-4 py-3 font-semibold">
               Nama Kelas
             </TableHead>
-            <TableHead className="px-4 py-3 text-left font-semibold">
+            <TableHead className="px-4 py-3 font-semibold">
               Wali Kelas
             </TableHead>
-            <TableHead className="px-4 py-3 text-left font-semibold">
+            <TableHead className="px-4 py-3 font-semibold">
               Tingkat
             </TableHead>
-            <TableHead className="px-4 py-3 text-left font-semibold">
+            <TableHead className="px-4 py-3 font-semibold">
+              Tahun Ajaran
+            </TableHead>
+            <TableHead className="px-4 py-3 font-semibold">
               Kapasitas Siswa
             </TableHead>
-            <TableHead className="px-4 py-3 text-left font-semibold">
+            <TableHead className="px-4 py-3 font-semibold">
               Tanggal
             </TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
-          {data?.data?.length ? (
-            data.data.map((kelas) => (
+          {data?.length ? (
+            data.map((kelas) => (
               <TableRow key={kelas.id} className="border-b hover:bg-accent">
-                <TableCell className="px-4 py-2">{kelas.nama_kelas}</TableCell>
-                <TableCell className="px-4 py-2">
+                <TableCell className="px-4 py-2 ">{kelas.nama_kelas}</TableCell>
+                <TableCell className="px-4 py-2 ">
                   {kelas.wali_kelas || "-"}
                 </TableCell>
                 <TableCell className="px-4 py-2">{kelas.tingkat}</TableCell>
+                <TableCell className="px-4 py-2">{kelas.tahun_ajaran}</TableCell>
                 <TableCell className="px-4 py-2">{kelas.kapasitas}</TableCell>
                 <TableCell className="px-4 py-2">
                   {FormatDate(kelas.created_at)}

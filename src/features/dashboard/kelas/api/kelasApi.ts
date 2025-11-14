@@ -2,7 +2,7 @@ import { api } from "@/lib/api";
 import { KelasDto, FilterkelasDto, UpsertKelasDto } from "../types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { API_RESPONSE } from "@/types/api";
+import { API_RESPONSE, ApiPagination } from "@/types/api";
 
 // ==================== QUERY KEYS ====================
 export const KelasKeys = {
@@ -20,7 +20,7 @@ export async function fetchAllKelas({
   params,
 }: {
   params: FilterkelasDto;
-}): Promise<API_RESPONSE<KelasDto[]>> {
+}): Promise<ApiPagination<KelasDto[]>> {
   const url = new URLSearchParams();
   if (params.limit) {
     url.append("limit", params.limit.toString());
@@ -31,7 +31,7 @@ export async function fetchAllKelas({
   if (params.search) {
     url.append("search", params.search.toString());
   }
-  const req = await api.get<API_RESPONSE<KelasDto[]>>(
+  const req = await api.get<ApiPagination<KelasDto[]>>(
     `/kelas?${url.toString()}`
   );
   return req.data;

@@ -1,117 +1,129 @@
-import * as React from "react"
-import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
+import { PaginationResponse } from "@/types/api";
+import { Button } from "../ui/button";
 
-import { cn } from "@/lib/utils"
-import { ButtonProps, buttonVariants } from "@/components/ui/button"
+export const PaginationComponents = ({
+  pagination,
+  onPageChange,
+}: {
+  pagination: PaginationResponse;
+  onPageChange: (page: number) => void;
+}) => {
+  // Generate page numbers untuk ditampilkan
+  const generatePageNumbers = () => {
+    const pages = [];
+    const totalPages = pagination.totalPages;
+    const currentPage = pagination.currentPage;
 
-const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
-  <nav
-    role="navigation"
-    aria-label="pagination"
-    className={cn("mx-auto flex w-full justify-center", className)}
-    {...props}
-  />
-)
-Pagination.displayName = "Pagination"
+    if (totalPages <= 5) {
+      // Jika total pages <= 5, tampilkan semua
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Logic untuk pagination dengan banyak pages
+      if (currentPage <= 3) {
+        // Jika di awal
+        pages.push(1, 2, 3, 4, 5);
+      } else if (currentPage >= totalPages - 2) {
+        // Jika di akhir
+        for (let i = totalPages - 4; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        // Jika di tengah
+        for (let i = currentPage - 2; i <= currentPage + 2; i++) {
+          pages.push(i);
+        }
+      }
+    }
 
-const PaginationContent = React.forwardRef<
-  HTMLUListElement,
-  React.ComponentProps<"ul">
->(({ className, ...props }, ref) => (
-  <ul
-    ref={ref}
-    className={cn("flex flex-row items-center gap-1", className)}
-    {...props}
-  />
-))
-PaginationContent.displayName = "PaginationContent"
+    return pages;
+  };
 
-const PaginationItem = React.forwardRef<
-  HTMLLIElement,
-  React.ComponentProps<"li">
->(({ className, ...props }, ref) => (
-  <li ref={ref} className={cn("", className)} {...props} />
-))
-PaginationItem.displayName = "PaginationItem"
+  const pageNumbers = generatePageNumbers();
 
-type PaginationLinkProps = {
-  isActive?: boolean
-} & Pick<ButtonProps, "size"> &
-  React.ComponentProps<"a">
+  return (
+    <div className="flex items-center justify-between space-x-2 py-4">
+      <div className="text-sm text-muted-foreground">
+        Menampilkan {(pagination.currentPage - 1) * pagination.itemsPerPage + 1}{" "}
+        -{" "}
+        {Math.min(
+          pagination.currentPage * pagination.itemsPerPage,
+          pagination.totalItems
+        )}{" "}
+        dari {pagination.totalItems} data
+      </div>
+      <div className="flex items-center space-x-2">
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={!pagination.hasPrevPage}
+          onClick={() => onPageChange(pagination.currentPage - 1)}
+        >
+          Previous
+        </Button>
 
-const PaginationLink = ({
-  className,
-  isActive,
-  size = "icon",
-  ...props
-}: PaginationLinkProps) => (
-  <a
-    aria-current={isActive ? "page" : undefined}
-    className={cn(
-      buttonVariants({
-        variant: isActive ? "outline" : "ghost",
-        size,
-      }),
-      className
-    )}
-    {...props}
-  />
-)
-PaginationLink.displayName = "PaginationLink"
+        <div className="flex items-center space-x-1">
+          {/* First page dengan ellipsis jika perlu */}
+          {pageNumbers[0] > 1 && (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-8 h-8 p-0"
+                onClick={() => onPageChange(1)}
+              >
+                1
+              </Button>
+              {pageNumbers[0] > 2 && (
+                <span className="px-2 text-muted-foreground">...</span>
+              )}
+            </>
+          )}
 
-const PaginationPrevious = ({
-  className,
-  ...props
-}: React.ComponentProps<typeof PaginationLink>) => (
-  <PaginationLink
-    aria-label="Go to previous page"
-    size="default"
-    className={cn("gap-1 pl-2.5", className)}
-    {...props}
-  >
-    <ChevronLeft className="h-4 w-4" />
-    <span>Previous</span>
-  </PaginationLink>
-)
-PaginationPrevious.displayName = "PaginationPrevious"
+          {/* Page numbers */}
+          {pageNumbers.map((pageNum) => (
+            <Button
+              key={pageNum}
+              variant={
+                pageNum === pagination.currentPage ? "default" : "outline"
+              }
+              size="sm"
+              className="w-8 h-8 p-0"
+              onClick={() => onPageChange(pageNum)}
+            >
+              {pageNum}
+            </Button>
+          ))}
 
-const PaginationNext = ({
-  className,
-  ...props
-}: React.ComponentProps<typeof PaginationLink>) => (
-  <PaginationLink
-    aria-label="Go to next page"
-    size="default"
-    className={cn("gap-1 pr-2.5", className)}
-    {...props}
-  >
-    <span>Next</span>
-    <ChevronRight className="h-4 w-4" />
-  </PaginationLink>
-)
-PaginationNext.displayName = "PaginationNext"
+          {/* Last page dengan ellipsis jika perlu */}
+          {pageNumbers[pageNumbers.length - 1] < pagination.totalPages && (
+            <>
+              {pageNumbers[pageNumbers.length - 1] <
+                pagination.totalPages - 1 && (
+                <span className="px-2 text-muted-foreground">...</span>
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-8 h-8 p-0"
+                onClick={() => onPageChange(pagination.totalPages)}
+              >
+                {pagination.totalPages}
+              </Button>
+            </>
+          )}
+        </div>
 
-const PaginationEllipsis = ({
-  className,
-  ...props
-}: React.ComponentProps<"span">) => (
-  <span
-    aria-hidden
-    className={cn("flex h-9 w-9 items-center justify-center", className)}
-    {...props}
-  >
-    <MoreHorizontal className="h-4 w-4" />
-    <span className="sr-only">More pages</span>
-  </span>
-)
-PaginationEllipsis.displayName = "PaginationEllipsis"
-
-export {
-  Pagination,
-  PaginationContent,
-  PaginationLink,
-  PaginationItem,
-  PaginationPrevious,
-  PaginationNext,
-  PaginationEllipsis,
-}
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={!pagination.hasNextPage}
+          onClick={() => onPageChange(pagination.currentPage + 1)}
+        >
+          Next
+        </Button>
+      </div>
+    </div>
+  );
+};

@@ -17,11 +17,10 @@ export type API_RESPONSE<T> = {
 };
 
 export type ApiPagination<T> = {
-  data: T;
-  pagination: {
-    totalPages: number;
-    totalItems: number;
-  };
+  data: {
+    data : T
+    meta : PaginationResponse
+  }
   success: boolean;
   message: string;
   status_code: number;
